@@ -1,0 +1,40 @@
+import random
+from collections import Counter
+
+# Define the monomers and their molar ratios
+monomers = ['A', 'B']
+molar_ratios = {'A': 0.45, 'B': 0.55}
+
+# Define the length of the chain and the number of Monte Carlo simulations
+chain_length = 500
+num_sims = 10000
+
+# Initialize a list to store all the generated sequences
+sequences = []
+
+# Run the Monte Carlo simulation num_sims times
+for i in range(num_sims):
+    # Initialize the chain with the first monomer
+    chain = [random.choices(monomers, weights=[molar_ratios[monomer] for monomer in monomers])[0]]
+    
+    # Add monomers to the chain
+    for j in range(chain_length - 1):
+        last_mon = chain[-1]
+        
+        # Choose the next monomer based on the molar ratios
+        next_mon = random.choices(monomers, weights=[molar_ratios[monomer] for monomer in monomers])[0]
+        
+        # Add the next monomer to the chain
+        chain.append(next_mon)
+    
+    # Append the generated sequence to the list
+    sequences.append("-".join(chain))
+
+# Count the frequency of each sequence
+sequence_counts = Counter(sequences)
+
+# Find the most common sequence
+most_common_sequence = sequence_counts.most_common(1)[0][0]
+
+# Print the most common sequence and its frequency
+print(f'The most common sequence is "{most_common_sequence}" and it appeared {sequence_counts[most_common_sequence]} times out of {num_sims} simulations.')
