@@ -1,0 +1,48 @@
+import random
+
+# Define the monomers and their reactivity ratios
+monomers = ['A', 'B']
+reactivity_ratios = {'A': 2.6, 'B': 0.39}
+
+# Define the molar ratios
+molar_ratios = {'A': 0.55, 'B': 0.45}
+
+# Define the length of the chain
+chain_length = 100
+
+# Define a dictionary to keep track of the frequency of each sequence generated
+sequences = {}
+
+# Run the Monte Carlo simulation 100000 times
+for i in range(100000):
+    # Initialize the chain with the first monomer
+    chain = [random.choices(monomers, weights=[molar_ratios[monomer] for monomer in monomers])[0]]
+    
+    # Add monomers to the chain
+    for j in range(chain_length - 1):
+        last_mon = chain[-1]
+        
+        # Calculate the probabilities of adding each monomer
+        prob_A = (molar_ratios['A'] * reactivity_ratios[last_mon]) / (molar_ratios['A'] * reactivity_ratios['A'] + molar_ratios['B'] * reactivity_ratios[last_mon])
+        prob_B = 1 - prob_A
+        
+        # Choose the next monomer based on the probabilities
+        next_mon = random.choices(monomers, weights=[prob_A, prob_B])[0]
+        
+        # Add the next monomer to the chain
+        chain.append(next_mon)
+    
+    # Convert the list of monomers to a string sequence
+    seq = ''.join(chain)
+    
+    # Add the sequence to the dictionary and increment its count
+    if seq in sequences:
+        sequences[seq] += 1
+    else:
+        sequences[seq] = 1
+
+# Find the most frequent sequence
+most_frequent_seq = max(sequences, key=sequences.get)
+
+# Print the most frequent sequence and its count
+print(f'Most frequent sequence: {most_frequent_seq} (count={sequences[most_frequent_seq]})')
